@@ -39,6 +39,12 @@ const Login = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e); // Trigger the form submission on Enter key press
+    }
+  };
+
   return (
     <>
       <HeaderSection />
@@ -81,6 +87,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="w-full p-3 bg-transparent border-none focus:outline-none text-white placeholder-gray-500"
+                onKeyDown={handleKeyDown}
               />
             </div>
           </div>

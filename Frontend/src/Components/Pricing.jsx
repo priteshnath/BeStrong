@@ -1,3 +1,5 @@
+import { Link as ScrollLink } from "react-scroll";
+
 const Pricing = () => {
   return (
     <div className="bg-black text-white py-20">
@@ -40,9 +42,17 @@ const Pricing = () => {
             </ul>
           </div>
         </div>
-        <button className="bg-lime-400 text-black font-semibold py-2 px-6 mt-10 rounded-md w-80">
-              Contact Us
-        </button>
+        <div className="mt-10">
+        <ScrollLink
+          to="contactus"
+          smooth={true}
+          offset={-70}
+          duration={500}
+          className="bg-lime-400 text-black cursor-pointer font-semibold py-2 px-6 rounded-md w-80"
+        >
+          Contact Us
+        </ScrollLink>
+        </div>
       </div>
     </div>
   );

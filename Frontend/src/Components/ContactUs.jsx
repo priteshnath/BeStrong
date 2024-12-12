@@ -10,7 +10,7 @@ const ContactUs = () => {
         <div className="w-full md:w-1/2 h-64 md:h-[400px] rounded-lg overflow-hidden bg-gray-800 mb-10 md:mb-0 md:mr-8">
           <iframe
             title="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345093713!2d144.95373531531595!3d-37.81627974201715!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d43f2b1b69f%3A0x506f0b1a47d23a0!2sVictoria!5e0!3m2!1sen!2sus!4v1614800422435!5m2!1sen!2sus"
+            src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=Be%20Strong%20Gym%20Vastral+(Be%20Strong)&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"
             className="w-full h-full border-0"
             allowFullScreen=""
             loading="lazy"
@@ -29,7 +29,7 @@ const ContactUs = () => {
               <FaMapMarkerAlt size={24} className="text-lime-400" />
               <div>
                 <h3 className="text-xl font-bold">Our Address</h3>
-                <p className="text-gray-300">123 Fitness Lane, Gym City, TX 78901</p>
+                <p className="text-gray-300">3rd and 4th Floor,Ved Arcade Mall,Oop Vastral Lake, Sardar Patel Ring Rd, Vastral, Ahmedabad, Gujarat 382418</p>
               </div>
             </div>
 
@@ -38,7 +38,7 @@ const ContactUs = () => {
               <FaPhoneAlt size={24} className="text-lime-400" />
               <div>
                 <h3 className="text-xl font-bold">Phone</h3>
-                <p className="text-gray-300">+1 (234) 567-8901</p>
+                <p className="text-gray-300">+91 97252 21515</p>
               </div>
             </div>
 
@@ -47,7 +47,7 @@ const ContactUs = () => {
               <FaEnvelope size={24} className="text-lime-400" />
               <div>
                 <h3 className="text-xl font-bold">Email</h3>
-                <p className="text-gray-300">contact@fitnesshub.com</p>
+                <p className="text-gray-300">contact@bestrong.com</p>
               </div>
             </div>
           </div>

@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FooterSection from "./FooterSection";
 import HeaderSection from "./HeaderSection";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate at the top
+import { Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 const GetStarted = () => {
   const [goal, setGoal] = useState("Muscle Gain");
   const [healthIssues, setHealthIssues] = useState([]);
   const [workouts, setWorkouts] = useState([{ name: "", sets: "", reps: "" }]);
+  const [age, setAge] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [weeksFollowing, setWeeksFollowing] = useState("");
+  const [username, setUsername] = useState(""); // State for username
+  const navigate = useNavigate(); // Call useNavigate at the top level of the component
+
+
+  
+
 
   const healthIssuesOptions = [
     "Heart Issues",
@@ -15,7 +29,7 @@ const GetStarted = () => {
     "Chronic Back Pain",
   ];
 
-  const exerciseList = {
+  const exerciseDisplayList = {
     Chest: ["Bench Press", "Push-Ups", "Chest Fly"],
     Legs: ["Squats", "Lunges", "Leg Press"],
     Biceps: ["Bicep Curls", "Hammer Curls", "Concentration Curls"],
@@ -23,6 +37,29 @@ const GetStarted = () => {
     Back: ["Deadlifts", "Pull-Ups", "Rows"],
     Triceps: ["Tricep Dips", "Skull Crushers", "Tricep Pushdowns"],
   };
+
+  const exerciseValueMap = {
+    "Bench Press": "bench_press",
+    "Push-Ups": "pushups",
+    "Chest Fly": "chest_fly",
+    "Squats": "squats",
+    "Lunges": "lunges",
+    "Leg Press": "leg_press",
+    "Bicep Curls": "bicep_curls",
+    "Hammer Curls": "hammer_curls",
+    "Concentration Curls": "concentration_curls",
+    "Overhead Press": "overhead_press",
+    "Lateral Raise": "lateral_raise",
+    "Front Raise": "front_raise",
+    "Deadlifts": "deadlifts",
+    "Pull-Ups": "pullups",
+    "Rows": "rows",
+    "Tricep Dips": "tricep_dips",
+    "Skull Crushers": "skull_crushers",
+    "Tricep Pushdowns": "tricep_pushdowns",
+  };
+
+  
 
   const handleHealthIssuesChange = (issue) => {
     setHealthIssues((prevIssues) =>
@@ -42,11 +79,57 @@ const GetStarted = () => {
     setWorkouts([...workouts, { name: "", sets: "", reps: "" }]);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Submit form logic here
-  };
+  useEffect(() => {
+    // Decode token and set username
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUsername(decoded.username); // Extract and set username
+        // console.log(username);
+      } catch (error) {
+        console.error("Invalid token:", error.message);
+      }
+    }
+  }, []);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      const data = {
+        age,
+        height,
+        weight,
+        goal,
+        healthIssues,
+        workouts,
+        weeksFollowing,
+        username,
+      };
+      
+
+      const response = await fetch('http://localhost:5000/api/handleRecommendation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result);
+        navigate('/dashboard'); // Redirect to the dashboard
+      } else {
+        console.error('Error submitting data:', result);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <>
       <HeaderSection />
@@ -62,9 +145,12 @@ const GetStarted = () => {
                 type="number"
                 id="age"
                 name="age"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
                 placeholder="Enter your age"
                 required
-                min="0"
+                min="15"
+                max="60"
                 className="w-full p-3 bg-gray-900 rounded-lg border-none focus:outline-none text-white placeholder-gray-500"
               />
             </div>
@@ -76,9 +162,12 @@ const GetStarted = () => {
                 type="number"
                 id="height"
                 name="height"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
                 placeholder="Enter your height in cm"
                 required
-                min="0"
+                min="55"
+                max="251"
                 className="w-full p-3 bg-gray-900 rounded-lg border-none focus:outline-none text-white placeholder-gray-500"
               />
             </div>
@@ -89,8 +178,10 @@ const GetStarted = () => {
               <input
                 type="number"
                 placeholder="Weight"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
                 required
-                min="0"
+                min="30"
                 className="w-full p-3 mb-2 bg-gray-900 rounded-lg border-none focus:outline-none text-white placeholder-gray-500"
               />
             </div>
@@ -135,7 +226,6 @@ const GetStarted = () => {
 
               {workouts.map((workout, index) => (
                 <div key={index} className="mb-6">
-                  {/* Exercise Name Dropdown */}
                   <div>
                     <label className="block mb-2 text-lg">Exercise</label>
                     <select
@@ -144,17 +234,22 @@ const GetStarted = () => {
                       className="w-full p-3 bg-gray-900 rounded-lg border-none focus:outline-none text-white"
                     >
                       <option value="">Select Exercise</option>
-                      {Object.entries(exerciseList).map(([group, exercises]) => (
+                      {Object.entries(exerciseDisplayList).map(([group, exercises]) => (
                         <optgroup key={group} label={group}>
                           {exercises.map((exercise) => (
-                            <option key={exercise} value={exercise}>{exercise}</option>
+                            <option
+                              key={exercise}
+                              value={exerciseValueMap[exercise]}
+                              data-display={exercise} // Add display value as metadata
+                            >
+                              {exercise}
+                            </option>
                           ))}
                         </optgroup>
                       ))}
                     </select>
-                  </div>
 
-                  {/* Sets and Reps */}
+                  </div>
                   <div className="flex space-x-4">
                     <div>
                       <label className="block my-2 text-lg">Sets</label>
@@ -163,7 +258,7 @@ const GetStarted = () => {
                         placeholder="Sets"
                         value={workout.sets}
                         onChange={(e) => handleWorkoutChange(index, "sets", e.target.value)}
-                        min="0"
+                        min="1"
                         className="w-full p-3 bg-gray-900 rounded-lg border-none focus:outline-none text-white placeholder-gray-500"
                       />
                     </div>
@@ -174,7 +269,7 @@ const GetStarted = () => {
                         placeholder="Reps"
                         value={workout.reps}
                         onChange={(e) => handleWorkoutChange(index, "reps", e.target.value)}
-                        min="0"
+                        min="1"
                         className="w-full p-3 bg-gray-900 rounded-lg border-none focus:outline-none text-white placeholder-gray-500"
                       />
                     </div>
@@ -191,10 +286,35 @@ const GetStarted = () => {
               </button>
             </div>
 
-            {/* Submit Button */}
+            {/* Weeks Following  */}
+            {
+              workouts[0].name != "" ?
+                <div className="relative">
+                  <label htmlFor="weeksFollowing" className="block mb-2 text-lg font-medium">
+                    Weeks Following Plan
+                  </label>
+                  {workouts.length > 0 && (
+                    <input
+                      type="number"
+                      id="weeksFollowing"
+                      name="weeksFollowing"
+                      value={weeksFollowing}
+                      onChange={(e) => setWeeksFollowing(e.target.value)}
+                      placeholder="Enter weeks (1-4)"
+                      min="1"
+                      max="4"
+                      className="w-full p-3 bg-gray-900 rounded-lg border-none focus:outline-none text-white placeholder-gray-500"
+                    />
+                  )}
+                </div>
+                :
+                ''
+            }
+
+
             <button
               type="submit"
-              className="w-80 bg-lime-500 text-black py-3 rounded-lg font-semibold hover:bg-lime-400 transition-colors block mx-auto"
+              className="w-full bg-lime-500 text-black py-3 text-center rounded-lg font-semibold hover:bg-lime-400 transition-colors block mx-auto"
             >
               Submit
             </button>

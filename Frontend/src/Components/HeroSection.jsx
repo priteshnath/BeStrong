@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-import { FaPlayCircle } from 'react-icons/fa';
 
 // Dummy image URLs
 const dummyImages = [
@@ -27,6 +26,9 @@ const HeroSection = () => {
     autoplaySpeed: 3000,
     fade: true, // Enable fade effect for a smoother transition
   };
+
+  const token = localStorage.getItem('token');
+
 
   return (
     <div className="relative h-screen flex flex-col justify-center items-center overflow-hidden">
@@ -50,9 +52,9 @@ const HeroSection = () => {
           Your Ultimate Destination for Unleashing Your Full Potential and Embracing a Vibrant, Active Lifestyle.
         </p>
         <div className="flex justify-center space-x-4">
-        <Link
-          to="/getstarted"
-          className="bg-lime-400 px-6 py-3 text-black font-semibold rounded-md">
+            <Link
+            to={ token ? '/dashboard' : '/login'}
+            className="bg-lime-400 px-6 py-3 text-black font-semibold rounded-md">
             Start Now.
           </Link>
         </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'; // useNavigate for redirecting
 import HeaderSection from './HeaderSection';
+import FooterSection from './FooterSection';
 
 
 const SignUp = () => {
@@ -54,7 +55,11 @@ const SignUp = () => {
       setSuccessMessage('');
     }
   };
-  
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit(e); // Trigger the form submission on Enter key press
+    }
+  };
 
   return (
     <>
@@ -135,6 +140,7 @@ const SignUp = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm your password"
                 className="w-full p-3 bg-transparent border-none focus:outline-none text-white placeholder-gray-500"
+                onKeyDown={handleKeyDown}
               />
             </div>
           </div>
@@ -158,6 +164,7 @@ const SignUp = () => {
           </div>
         </div>
       </div>
+      <FooterSection />
     </>
   );
 };
